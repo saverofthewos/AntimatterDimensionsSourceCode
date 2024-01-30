@@ -22,6 +22,9 @@ export const h2p = {
 Welcome to the How to Play!
 <br>
 <br>
+<b>See the next How To Play entry to view the changes in this mod.</b>
+<br>
+<br>
 This modal (pop-up window) contains in-depth explanations and additional details for everything you will encounter
 as you progress through the game. As you unlock new features and mechanics, you will also gain access to additional
 pages here. If you ever feel lost or confused about how something in the game works, you may find a helpful
@@ -34,6 +37,82 @@ visible tab and subtab, if such an entry exists.
 `,
       isUnlocked: () => true,
       tags: ["h2p", "how", "to", "play", "modal"],
+      tab: ""
+    },
+    {
+      name: "What has changed",
+      info: () => `
+As the mod name, almost all mechanics are speeded up by ${formatX(globalSpeedFactor)}. This is called the global speed factor.<br>
+<br>
+To be separated from the in-game speed change mechanic, 'real/game real/game time' means
+this timer doesn't/does count speed up from this mod and doesn't/does count in-game speed change.<br>
+<br>
+To make the game run normally and still balanced in some way, some mechanics are not speeded up
+${player.blackHole[0].unlocked||player.records.fullGameCompletions>0?"or speeded up by a lower factor":""}:<br>
+${player.speedrun.isUnlocked?`
+- Speedrun timer is not speeded up.<br>
+`:""}
+- News scrolling is not speeded up.<br>
+- Playtime tracking (real time) is not speeded up.<br>
+- Autobuyers are not speeded up.<br>
+- The timers of requirements of achievements are not speeded up unless specified.<br>
+- The timers of achievement rewards that drops over time are not speeded up.<br>
+${PlayerProgress.infinityUnlocked()?`
+- The timers that record the fastest completion of challenges or prestiges are not speeded up.<br>
+- The normal matter appears in some challenges is not speeded up.<br>
+`:""}
+${Autobuyer.bigCrunch.hasMaxedInterval||PlayerProgress.eternityUnlocked()||player.records.fullGameCompletions>0?`
+- The production drop in Infinity Challenge 8 is not speeded up.<br>
+`:""}
+${PlayerProgress.eternityUnlocked()||player.records.fullGameCompletions>0?`
+- Time Study 141's multiplier's drop is not speeded up.<br>
+`:""}
+${player.blackHole[0].unlocked||player.records.fullGameCompletions>0?`
+- Black Hole ticking is still speeded up, but only square-rooted as ${formatX(Math.pow(globalSpeedFactor,1/2))}. Notice that both inactive time and duration are speeded up.<br>
+`:""}
+${Player.automatorUnlocked||player.records.fullGameCompletions>0?`
+- Automator running is not speeded up.<br>
+`:""}
+${EffarigUnlock.eternity.isUnlocked||player.records.fullGameCompletions>0?`
+- Charging real time doesn't charge ${formatX(globalSpeedFactor)} time.<br>
+`:""}
+${VUnlocks.raUnlock.isUnlocked||player.records.fullGameCompletions>0?`
+- Memory Chunk and Memory production are still speeded up, but only square-rooted as ${formatX(Math.pow(globalSpeedFactor,1/2))}.<br>
+`:""}
+${Laitela.isUnlocked||player.records.fullGameCompletions>0?`
+- In Lai'tela's Reality, entropy production and game speed recovery are not speeded up.<br>
+- Dark Matter Dimensions are still speeded up, but only square-rooted as ${formatX(Math.pow(globalSpeedFactor,1/2))}.<br>
+`:""}
+${Pelle.isDoomed||player.records.fullGameCompletions>0?`
+- In Doomed Reality, the global speed factor is square-rooted as ${formatX(Math.pow(globalSpeedFactor,1/2))}.<br>
+`:""}
+${Achievement(188).isUnlocked||player.records.fullGameCompletions>0?`
+- The ending animation is not speeded up.<br>
+`:""}
+${Achievement(188).isUnlocked||player.records.fullGameCompletions>0?"":
+`More mechanics will show here as you reach them.<br>`
+}
+<br>
+Also, there are some extra buffs to the game.<br>
+${Autobuyer.bigCrunch.hasMaxedInterval||PlayerProgress.eternityUnlocked()?`
+- The infinity generating break infinity upgrade counts the boost from achievement 87 and time study 32.<br>
+${PlayerProgress.eternityUnlocked()||player.records.fullGameCompletions>0?`
+- You gain a multiplier to eternities gained on eternity based on your current eternities, to a minimal of ${formatX(5)} and a maximal of ${formatX(1000)}.<br>
+`:""}
+${PlayerProgress.realityUnlocked()||player.records.fullGameCompletions>0?`
+- Realities are always simuated +${format(4)}× (additive with other amplify mutipliers).<br>
+- You gain a multiplier to perk points gained on reality based on your current realities, to a maximal of ${formatX(20)}.<br>
+`:""}
+${PlayerProgress.realityUnlocked()||player.records.fullGameCompletions>0?"":
+`More buffs will show here as you reach them.<br>`
+}
+`:"These buffs will show here as you reach them.<br>"
+}
+<br>
+Visit here often to be clear about what has changed, especially when unlocking a new mechanic.
+`,
+      isUnlocked: () => true,
+      tags: ["mod", "speed", "change"],
       tab: ""
     },
     {
@@ -1127,7 +1206,8 @@ In these cases, it will be specifically mentioned that a given time is stated as
 <i>game time</i>. One such example is the set of Perks which automatically completes Eternity Challenges over time.
 Otherwise, it should be assumed from this point onward that all references to time are for <i>game time</i>.
 Note that this also includes situations where you may want to have a <i>lower</i> amount of time spent, like
-the Reality Upgrade "Replicative Rapidity" for example.
+the Reality Upgrade "Replicative Rapidity" for example.<br>
+<b>See 'What has changed' to know about how this works with this mod's speedup.</b>
 <br>
 <br>
 You can buy upgrades for the Black Hole by using Reality Machines. There are three upgrades for the Black Hole:

@@ -161,12 +161,8 @@ export const normalAchievements = [
   {
     id: 35,
     name: "Don't you dare sleep",
-    get description() {
-      return PlayerProgress.realityUnlocked()
-        ? `Be offline for a period of over ${formatInt(6)} hours (real time).`
-        : `Be offline for a period of over ${formatInt(6)} hours.`;
-    },
-    checkRequirement: () => Date.now() - player.lastUpdate >= 21600000,
+    get description(){return `Be offline for a period of over ${formatInt(6)} hours (game real time).`;},
+    checkRequirement: () => (((Date.now() - player.lastUpdate) * getGlobalSpeedFactor()) >= 21600000),
     checkEvent: GAME_EVENT.GAME_TICK_BEFORE
   },
   {
@@ -248,7 +244,7 @@ export const normalAchievements = [
     name: "Over in 30 Seconds",
     get description() {
       return `Have antimatter per second exceed your current antimatter
-      for ${formatInt(30)} consecutive seconds.`;
+      for ${formatInt(30)} consecutive seconds (game game time).`;
     },
     checkRequirement: () => AchievementTimers.marathon1
       .check(Currency.antimatter.productionPerSecond.gt(Currency.antimatter.value), 30),
@@ -341,8 +337,8 @@ export const normalAchievements = [
     get reward() {
       return `All Antimatter Dimensions are stronger in the first ${formatInt(3)} minutes of Infinities.`;
     },
-    effect: () => Math.max(6 / (Time.thisInfinity.totalMinutes + 3), 1),
-    effectCondition: () => Time.thisInfinity.totalMinutes < 3,
+    effect: () => Math.max(6 / (Time.thisInfinity.totalMinutes / getGlobalSpeedFactor() + 3), 1),
+    effectCondition: () => Time.thisInfinity.totalMinutes / getGlobalSpeedFactor() < 3,
     formatEffect: value => `${formatX(value, 2, 2)}`
   },
   {
@@ -416,8 +412,8 @@ export const normalAchievements = [
       return `All Antimatter Dimensions are stronger in the first ${formatInt(3)} minutes of Infinities,
       but only in Challenges.`;
     },
-    effect: () => (Player.isInAnyChallenge ? Math.max(4 / (Time.thisInfinity.totalMinutes + 1), 1) : 1),
-    effectCondition: () => Player.isInAnyChallenge && Time.thisInfinity.totalMinutes < 3,
+    effect: () => (Player.isInAnyChallenge ? Math.max(4 / (Time.thisInfinity.totalMinutes / getGlobalSpeedFactor() + 1), 1) : 1),
+    effectCondition: () => Player.isInAnyChallenge && Time.thisInfinity.totalMinutes / getGlobalSpeedFactor() < 3,
     formatEffect: value => `${formatX(value, 2, 2)}`
   },
   {
@@ -505,7 +501,7 @@ export const normalAchievements = [
   {
     id: 76,
     name: "One for each dimension",
-    get description() { return `Play for ${formatInt(8)} days.`; },
+    get description() { return `Play for ${formatInt(8)} days (game game time).`; },
     checkRequirement: () => Time.totalTimePlayed.totalDays >= 8,
     checkEvent: GAME_EVENT.GAME_TICK_AFTER,
     reward: "Extremely small multiplier to Antimatter Dimensions based on time played.",
@@ -622,8 +618,8 @@ export const normalAchievements = [
       return `All Antimatter Dimensions are significantly stronger in the
       first ${formatInt(5)} seconds of Infinities.`;
     },
-    effect: () => Math.max((5 - Time.thisInfinity.totalSeconds) * 60, 1),
-    effectCondition: () => Time.thisInfinity.totalSeconds < 5,
+    effect: () => Math.max((5 - Time.thisInfinity.totalSeconds / getGlobalSpeedFactor()) * 60, 1),
+    effectCondition: () => Time.thisInfinity.totalSeconds / getGlobalSpeedFactor() < 5,
     formatEffect: value => `${formatX(value, 2, 2)}`
   },
   {
@@ -638,8 +634,8 @@ export const normalAchievements = [
       return `All Antimatter Dimensions are significantly stronger in the
       first ${formatInt(60)} seconds of Infinities.`;
     },
-    effect: () => Math.max((1 - Time.thisInfinity.totalMinutes) * 100, 1),
-    effectCondition: () => Time.thisInfinity.totalMinutes < 1,
+    effect: () => Math.max((1 - Time.thisInfinity.totalMinutes / getGlobalSpeedFactor()) * 100, 1),
+    effectCondition: () => Time.thisInfinity.totalMinutes / getGlobalSpeedFactor() < 1,
     formatEffect: value => `${formatX(value, 2, 2)}`
   },
   {
@@ -720,7 +716,7 @@ export const normalAchievements = [
     id: 104,
     name: "That wasn't an eternity",
     get description() { return `Eternity in under ${formatInt(30)} seconds.`; },
-    checkRequirement: () => Time.thisEternity.totalSeconds <= 30,
+    checkRequirement: () => Time.thisEternity.totalSeconds / getGlobalSpeedFactor() <= 30,
     checkEvent: GAME_EVENT.ETERNITY_RESET_BEFORE,
     get reward() { return `Start Eternities with ${format(5e25)} Infinity Points.`; },
     effect: 5e25
@@ -739,7 +735,7 @@ export const normalAchievements = [
     id: 106,
     name: "The swarm",
     get description() { return `Get ${formatInt(10)} Replicanti Galaxies in ${formatInt(15)} seconds.`; },
-    checkRequirement: () => Replicanti.galaxies.total >= 10 && Time.thisInfinity.totalSeconds <= 15,
+    checkRequirement: () => Replicanti.galaxies.total >= 10 && Time.thisInfinity.totalSeconds / getGlobalSpeedFactor() <= 15,
     checkEvent: GAME_EVENT.REPLICANTI_TICK_AFTER
   },
   {
@@ -752,7 +748,7 @@ export const normalAchievements = [
   {
     id: 108,
     name: "We COULD afford 9",
-    get description() { return `Eternity with exactly ${formatInt(9)} Replicanti.`; },
+    get description() { return `Eternity with exactly ${formatInt(9)} Replicanti. Tip: Find a way to slow that down.`; },
     checkRequirement: () => Replicanti.amount.round().eq(9),
     checkEvent: GAME_EVENT.ETERNITY_RESET_BEFORE
   },
@@ -785,7 +781,7 @@ export const normalAchievements = [
     id: 113,
     name: "Eternities are the new infinity",
     get description() { return `Eternity in under ${formatInt(250)}ms.`; },
-    checkRequirement: () => Time.thisEternity.totalMilliseconds <= 250,
+    checkRequirement: () => Time.thisEternity.totalMilliseconds / getGlobalSpeedFactor() <= 250,
     checkEvent: GAME_EVENT.ETERNITY_RESET_BEFORE,
     get reward() { return `Gain ${formatX(2)} more Eternities.`; },
     effect: 2,
@@ -994,7 +990,7 @@ export const normalAchievements = [
     },
     checkRequirement: () =>
       Currency.antimatter.exponent >= 260000 &&
-      Time.thisEternity.totalMinutes <= 1 &&
+      Time.thisEternity.totalMinutes / getGlobalSpeedFactor() <= 1 &&
       player.dilation.active,
     checkEvent: GAME_EVENT.GAME_TICK_AFTER,
     get reward() { return `Gain ${formatX(2)} Dilated Time and Time Theorems while Dilated.`; },
@@ -1128,8 +1124,8 @@ export const normalAchievements = [
   {
     id: 154,
     name: "I am speed",
-    get description() { return `Reality in under ${formatInt(5)} seconds (game time).`; },
-    checkRequirement: () => Time.thisReality.totalSeconds <= 5,
+    get description() { return `Reality in under ${formatInt(5)} seconds (real game time).`; },
+    checkRequirement: () => Time.thisReality.totalSeconds / getGlobalSpeedFactor() <= 5,
     checkEvent: GAME_EVENT.REALITY_RESET_BEFORE,
     get reward() { return `${formatPercents(0.1)} chance each Reality of ${formatX(2)} Realities and Perk Points.`; },
     effect: 0.1
@@ -1137,7 +1133,7 @@ export const normalAchievements = [
   {
     id: 155,
     name: "Achievement #15983",
-    get description() { return `Play for ${formatFloat(13.7, 1)} billion years.`; },
+    get description() { return `Play for ${formatFloat(13.7, 1)} billion years (game game time).`; },
     checkRequirement: () => Time.totalTimePlayed.totalYears > 13.7e9,
     checkEvent: GAME_EVENT.GAME_TICK_AFTER,
     get reward() { return `Black Hole durations are ${formatPercents(0.1)} longer.`; },
@@ -1190,10 +1186,10 @@ export const normalAchievements = [
     name: "Actually, super easy! Barely an inconvenience!",
     get description() {
       return `Complete all the Eternity Challenges ${formatInt(5)} times with less than ${formatInt(1)}
-      second (game time) in your current Reality.`;
+      second (real game time) in your current Reality.`;
     },
     checkRequirement: () => EternityChallenges.all.map(ec => ec.completions).min() >= 5 &&
-      Time.thisReality.totalSeconds <= 1,
+      Time.thisReality.totalSeconds / getGlobalSpeedFactor() <= 1,
     checkEvent: GAME_EVENT.GAME_TICK_AFTER
   },
   {
